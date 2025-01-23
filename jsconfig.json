@@ -3,9 +3,9 @@
 		"module": "Node16",
 		"target": "ES2022",
 		"checkJs": true,  /* Typecheck .js files. */
-		"lib": [
-			"ES2022"
-		]
+		"lib": ["ES2022"],
+		"esModuleInterop": true,            /* Habilita importação correta de módulos CommonJS */
+		"allowSyntheticDefaultImports": true /* Permite importar módulos sem "default" */
 	},
 	"exclude": [
 		"node_modules"

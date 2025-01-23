@@ -10,14 +10,88 @@
     "Other"
   ],
   "activationEvents": [
-  
+    "onCommand:extension.register",
+    "onCommand:extension.login",
+    "onCommand:extension.logout",
+    "onCommand:extension.saveSession",
+    "onCommand:extension.countLines",
+    "onCommand:extension.startCodingTimer",
+    "onCommand:extension.resetCodingTimer",
+    "onCommand:extension.stopTimer",
+    "onCommand:extension.startPomodoro",
+    "onCommand:extension.stopPomodoro",
+    "onCommand:extension.editPomodoroSettings",
+    "onCommand:extension.viewStats"
   ],
   "main": "./extension.js",
   "contributes": {
-    "commands": [{
-      "command": "extension.countLines",
-      "title": "ContadorDeLinhas"
-    }]
+    "commands": [
+      {
+        "command": "extension.register",
+        "title": "Registrar Usuário no Firebase",
+        "category": "Kata Kid"
+      },
+      {
+        "command": "extension.login",
+        "title": "Login no Firebase",
+        "category": "Kata Kid"
+      },
+      {
+        "command": "extension.logout",
+        "title": "Logout do Firebase",
+        "category": "Kata Kid"
+      },
+      {
+        "command": "extension.saveSession",
+        "title": "Salvar Sessão no Firebase",
+        "category": "Kata Kid"
+      },
+      {
+        "command": "extension.countLines",
+        "title": "Contar Linhas",
+        "category": "Kata Kid"
+      },
+      {
+        "command": "extension.startCodingTimer",
+        "title": "Iniciar Cronômetro",
+        "category": "Kata Kid"
+      },
+      {
+        "command": "extension.resetCodingTimer",
+        "title": "Reiniciar Cronômetro",
+        "category": "Kata Kid"
+      },
+      {
+        "command": "extension.stopTimer",
+        "title": "Parar Cronômetro",
+        "category": "Kata Kid"
+      },
+      {
+        "command": "extension.startPomodoro",
+        "title": "Iniciar Método Pomodoro",
+        "category": "Kata Kid"
+      },
+      {
+        "command": "extension.stopPomodoro",
+        "title": "Parar Método Pomodoro",
+        "category": "Kata Kid"
+      },
+      {
+        "command": "extension.editPomodoroSettings",
+        "title": "Editar Configurações do Método Pomodoro",
+        "category": "Kata Kid"
+      },
+      {
+        "command": "extension.viewStats",
+        "title": "Ver Estatísticas",
+        "category": "Kata Kid"
+      },
+      {
+        "command": "extension.setCodingGoal",
+        "title": "Definir Meta de Codificação Semanal",
+        "category": "Kata Kid"
+      }
+    ]
   },
   "scripts": {
     "lint": "eslint .",
@@ -25,11 +99,16 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.93.0",
     "@types/mocha": "^10.0.7",
     "@types/node": "20.x",
-    "eslint": "^9.9.1",
+    "@types/vscode": "^1.93.0",
     "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
+    "@vscode/test-electron": "^2.4.1",
+    "eslint": "^9.9.1"
+  },
+  "dependencies": {
+    "firebase": "^11.1.0",
+    "marked": "^15.0.4",
+    "moment": "^2.30.1"
   }
 }

@@ -1,55 +1,118 @@
-// The module 'vscode' contains the VS Code extensibility API
-
-// Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
-const fs = require('fs');
-const timeStamp = require('console');
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+const { countLines } = require('./lineCounter');
+const { startCodingTimer, resetInactivityTimer, resetCodingTimer, stopCodingTimer } = require('./codingTimer');
+const { startPomodoro, stopPomodoro } = require('./pomodoroTimer');
+const { register, login, logout } = require('./firebaseAuth');
+const { saveSession, viewStats } = require('./firebaseData');
+const { editPomodoroSettings, loadPomodoroSettings } = require('./editPomodoroTimer'); // Adiciona a nova importação
+const { setCodingGoal } = require('./setCodingGoal');
+const { trackCodingProgress } = require('./weeklyGoals');
 
-/**
- * @param {vscode.ExtensionContext} context
- */
+
 function activate(context) {
+    console.log('Congratulations, your extension "kata-kid" is now active!');
+    loadPomodoroSettings(context);
+    // Comando para registrar usuário
+    let registrarCommand = vscode.commands.registerCommand('extension.register', () => {
+        register();
+    });
+    context.subscriptions.push(registrarCommand);
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "kata-kid" is now active!');
+    // Comando para login
+    let loginCommand = vscode.commands.registerCommand('extension.login', () => {
+        login();
+    });
+    context.subscriptions.push(loginCommand);
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable= vscode.commands.registerCommand('extension.countLines', () => {
-		const editor = vscode.window.activeTextEditor;
-		if (editor) {
-			const document = editor.document;
-			let lineCount = 0;
-			const language = document.languageId;
+    // Comando para logout
+    let logoutCommand = vscode.commands.registerCommand('extension.logout', () => {
+        logout();
+    });
+    context.subscriptions.push(logoutCommand);
 
-			for (let i = 0; i < document.lineCount; i++) {
-				const line = document.lineAt(i).text;
-				if (line.trim() !=='') {
-					lineCount++;
-				}
-			}
+    // Comando para salvar sessão
+    let saveSessionCommand = vscode.commands.registerCommand('extension.saveSession', () => {
+        saveSession(); 
+    });
+    context.subscriptions.push(saveSessionCommand);
 
-			const data = {
-				language: language,
-				lines: lineCount,
-				timeStamp: new Date().toISOString()
-			};
-			fs.writeFileSync('codingStats.json', JSON.stringify(data, null, 2));
+    // Comando para contar linhas
+    let countLinesCommand = vscode.commands.registerCommand('extension.countLines', () => {
+        const editor = vscode.window.activeTextEditor;
+        try {
+            const result = countLines(editor);
+            vscode.window.showInformationMessage(
+                `Linguagem: ${result.language}\nLinhas neste arquivo: ${result.currentFileLines}\nTotal acumulado: ${result.totalLines}`
+            );
+        } catch (error) {
+            vscode.window.showErrorMessage(error.message);
+        }
+    });    
+    context.subscriptions.push(countLinesCommand);
 
-			vscode.window.showInformationMessage("O documento " + language + " tem " + lineCount + " linhas.");
-		}
-		});
-	context.subscriptions.push(disposable);
+    // Comando para iniciar o cronômetro manualmente
+    let startTimerCommand = vscode.commands.registerCommand('extension.startCodingTimer', () => {
+        startCodingTimer();
+    });
+    context.subscriptions.push(startTimerCommand);
+
+    // Comando para reiniciar o cronômetro manualmente
+    let resetTimerCommand = vscode.commands.registerCommand('extension.resetCodingTimer', () => {
+        resetCodingTimer();
+    });
+    context.subscriptions.push(resetTimerCommand);
+
+    // Listener para redefinir o tempo de inatividade ao editar
+    vscode.workspace.onDidChangeTextDocument(() => {
+        startCodingTimer();
+        resetInactivityTimer();
+    });
+
+    // Comando para parar o cronômetro manualmente
+    let stopTimerCommand = vscode.commands.registerCommand('extension.stopTimer', () => {
+        stopCodingTimer();
+    });
+    context.subscriptions.push(stopTimerCommand);
+
+    // Comando para iniciar o método Pomodoro
+    let startPomodoroCommand = vscode.commands.registerCommand('extension.startPomodoro', () => {
+        startPomodoro(); // Chama a função importada
+    });
+    context.subscriptions.push(startPomodoroCommand);
+
+    // Comando para parar o método Pomodoro
+    let stopPomodoroCommand = vscode.commands.registerCommand('extension.stopPomodoro', () => {
+        stopPomodoro(); // Chama a função importada
+    });
+    context.subscriptions.push(stopPomodoroCommand);
+
+    // Comando para editar configurações do Pomodoro
+    let editSettingsCommand = vscode.commands.registerCommand('extension.editPomodoroSettings', () => {
+        editPomodoroSettings(context);
+    });
+    context.subscriptions.push(editSettingsCommand);
+
+    // Comando para ver as estatísticas
+    let disposable = vscode.commands.registerCommand('extension.viewStats', () => {
+        viewStats();
+    });
+    context.subscriptions.push(disposable);
+
+     // Comando para definir metas
+     context.subscriptions.push(
+        vscode.commands.registerCommand('extension.setCodingGoal', () => setCodingGoal(context))
+    );
+
+    // Inicia o rastreamento de progresso semanal
+    trackCodingProgress(context);
 }
 
-// This method is called when your extension is deactivated
-function deactivate() {}
+function deactivate() {
+    stopCodingTimer();
+    stopPomodoro();
+}
 
 module.exports = {
-	activate,
-	deactivate
-}
+    activate,
+    deactivate,
+};
