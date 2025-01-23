@@ -4,14 +4,14 @@ const { getAuth } = require('firebase/auth');
 const { getDatabase } = require('firebase/database');
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDGyhOg3Y6D1RvGc5OQadjVsVa8GbgMhcg",
-  authDomain: "projetofinal-7ac00.firebaseapp.com",
-  databaseURL: "https://projetofinal-7ac00-default-rtdb.firebaseio.com",
-  projectId: "projetofinal-7ac00",
-  storageBucket: "projetofinal-7ac00.firebasestorage.app",
-  messagingSenderId: "654582872689",
-  appId: "1:654582872689:web:1c8b8e1ac5ff90267879d0",
-  measurementId: "G-Y9J868QRB7"
+  apiKey: "SUA_API_KEY",
+  authDomain: "SEU_DOMINIO.firebaseapp.com",
+  databaseURL: "https://SEU_DATABASE.firebaseio.com",
+  projectId: "SEU_PROJETO",
+  storageBucket: "SEU_BUCKET",
+  messagingSenderId: "SEU_ID",
+  appId: "SEU_APP_ID",
+  measurementId: "SEU_ID"
 };
 
 // Inicializa o Firebase apenas se não houver uma instância ativa
